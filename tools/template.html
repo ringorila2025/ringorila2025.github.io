@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ja" data-font="{{FONT_KEY}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{NAME}}</title>
+<meta name="description" content="{{NAME}}｜{{TAGLINE}} ライブ予定・動画・写真">
+<meta property="og:title" content="{{NAME}}">
+<meta property="og:description" content="{{TAGLINE}} ライブ予定・動画・写真">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{URL}}/">
+<meta property="og:image" content="{{URL}}/assets/artist.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{{FONT_URL}}" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<!-- しくみ（タブ・たたむ・切りかえ）。見た目を変えるときも、ここは触らない -->
+<style id="shikumi">
+.vh{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.js .pane{display:none}.js .pane.on{display:block}
+.js .evlist:not(.open) .ev.later{display:none}
+#sec-live[data-live=tanura] .ichiran-top{display:none}
+#sec-live:not([data-live=yoko]) .yoko-hint,#sec-live[data-live=yoko] .more-btn{display:none}
+.reel{position:relative}
+</style>
+<style id="mitame">
+/* =====================================================================
+   見た目（ここだけ書きかえてOK）
+   ---------------------------------------------------------------------
+   AIへ：このページの見た目は、この <style id="mitame"> の中だけで決まっています。
+   ・HTML（<body> の中）と <style id="shikumi">・<script> は変えないでください。
+     文章・リンク・写真・予定の中身は、そのままにしてください。
+   ・色はまず下の :root の --bg（背景）/ --ink（文字）/ --accent（差し色）を変えると、全体が変わります。
+     --faint（うすい面）/ --edge（細い線）/ --card（カードの面）は、--bg と --ink から決まります。
+   ・字・大きさ・並べ方・形・枠・角丸・影・背景の模様などは自由に変えてOKです。
+     欄の順番は .wrap を display:flex; flex-direction:column にして、各 section に order を付けると入れ替えられます。
+   ・画像は増やせません。飾りはCSSだけで（グラデーション・絵文字・::before など）。
+   ・Googleフォントを使うときは、この中のいちばん上に @import url(...); を書いてください。
+   ・スマホ（幅375px）で見やすいように。
+   ---------------------------------------------------------------------
+   今の見た目：墨・曲線・やわらかなモノトーン（2026-11 チャッピー案をもとに、たぬが選んだもの）
+   ===================================================================== */
+:root{
+  --bg:{{BG}}; --ink:{{INK}}; --accent:{{ACCENT}}; --on-accent:{{ON_ACCENT}};
+  --sub:color-mix(in srgb,var(--ink) 64%,var(--bg));
+  --faint:color-mix(in srgb,var(--ink) 6%,var(--bg));
+  --edge:color-mix(in srgb,var(--ink) 10%,var(--bg));
+  --edge2:color-mix(in srgb,var(--ink) 14%,var(--bg));
+  --card:{{CARD}};
+  --line:1px;
+  --font:"Noto Sans JP",system-ui,sans-serif; --head:{{HEAD}},"Noto Sans JP",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:radial-gradient(ellipse at 0% 8%,color-mix(in srgb,var(--ink) 5%,var(--bg)) 0,transparent 30%),radial-gradient(ellipse at 100% 55%,color-mix(in srgb,var(--ink) 4%,var(--bg)) 0,transparent 28%),var(--bg);color:var(--ink);font-family:var(--font);font-weight:700;line-height:1.8;overflow-x:hidden}
+a{color:inherit;text-underline-offset:4px}
+button,input,select{font:inherit}
+.muted{color:var(--sub);font-size:14px;font-weight:400}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+
+/* 上の流れる帯 */
+.ticker{background:var(--accent);color:var(--on-accent);overflow:hidden;white-space:nowrap;font-size:12px;padding:9px 0;letter-spacing:.15em;border-radius:0 0 50% 50% / 0 0 18px 18px}
+.ticker-in{display:inline-flex;animation:tk 36s linear infinite}
+.ticker-in span{padding-right:4em}
+@keyframes tk{to{transform:translateX(-50%)}}
+
+/* いちばん上（ロゴ・名前・アー写・紹介） */
+header.hero{padding:38px 0 0}
+.brand{display:flex;align-items:center;gap:clamp(10px,3vw,16px)}
+.logo{width:clamp(56px,22vw,124px);height:auto;flex:none;display:block}
+.logo .ink{fill:var(--ink)} .logo .paper{fill:var(--bg)}
+h1{font-family:var(--head);font-weight:900;font-size:clamp(30px,13vw,92px);line-height:1;margin:0;letter-spacing:.02em;white-space:nowrap}
+.en{margin:8px 0 0;font-size:clamp(13px,3.4vw,16px);letter-spacing:.35em;color:var(--sub)}
+.tag{display:inline-block;margin:22px 0 0;padding:9px 22px;font-size:clamp(16px,4.4vw,20px);background:var(--faint);border-radius:50px 50px 50px 8px}
+.artist{position:relative;margin:24px 0 0;border:5px solid var(--card);border-radius:40px 40px 40px 10px;overflow:hidden;box-shadow:0 8px 25px #0000001a}
+.artist img{display:block;width:100%;height:auto}
+.about{margin:22px 4px 0;font-weight:400;font-size:15px;line-height:2}
+
+/* 各欄と見出し */
+.sec{position:relative;margin-top:58px;padding-top:20px}
+.sec::before{content:"";display:block;width:64px;height:4px;margin-bottom:20px;border-radius:50%;background:var(--ink)}
+h2{font-family:var(--head);font-weight:900;font-size:clamp(26px,7vw,38px);line-height:1.25;margin:0 0 22px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h2 small{font-family:var(--font);font-size:13px;letter-spacing:.3em;color:var(--sub);font-weight:700}
+
+/* ライブの予定1件 */
+.ev{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;padding:18px 14px;margin-bottom:12px;background:var(--card);border:1px solid var(--edge);border-radius:24px 24px 24px 8px}
+.ev-date{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;background:var(--faint);border-radius:50px;padding:10px 4px}
+.ev-m{font-size:13px}
+.ev-d{font-family:var(--head);font-size:38px;font-weight:900;margin:3px 0}
+.ev-w{font-size:12px;color:var(--sub)}
+.ev-body h3{margin:2px 0 4px;font-size:19px;line-height:1.4;overflow-wrap:anywhere}
+.ev-venue{margin:0 0 4px;font-size:15px}
+.ev-map{margin-left:8px;font-size:13px;font-weight:400;white-space:nowrap}
+.ev-info{list-style:none;margin:0;padding:0;font-size:14px;font-weight:400;color:var(--sub)}
+.ev-flyer{grid-column:1/-1;overflow:hidden;border-radius:18px}
+.ev-flyer img{display:block;width:100%;max-height:420px;object-fit:contain;background:var(--faint);border-radius:18px}
+#sec-next .ev{border:1px solid var(--ink);padding:18px;border-radius:30px 30px 30px 8px;box-shadow:0 7px 22px #00000012}
+
+/* ライブ予定：リスト（縦）。フライヤーは小さく右に */
+.evlist .ev{grid-template-columns:56px minmax(0,1fr) 84px;gap:12px}
+.evlist .ev-d{font-size:32px}
+.evlist .ev-body h3{font-size:17px}
+.evlist .ev-date{grid-column:1;grid-row:1}
+.evlist .ev-body{grid-column:2;grid-row:1;min-width:0}
+.evlist .ev-flyer{grid-column:3;grid-row:1}
+.evlist .ev-flyer img{width:84px;height:112px;max-height:none;object-fit:cover;border:1px solid var(--edge);border-radius:14px}
+.evlist .ev:not(:has(.ev-flyer)) .ev-body{grid-column:2/4}
+.more-btn{display:block;width:100%;margin-top:14px;border:1px solid var(--ink);background:transparent;color:var(--ink);padding:12px;font-weight:900;font-size:15px;cursor:pointer;border-radius:50px;transition:.25s}
+.more-btn:hover{background:var(--ink);color:var(--bg)}
+
+/* ライブ予定：横スクロール */
+[data-live=yoko] .evlist{display:flex;align-items:stretch;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px}
+[data-live=yoko] .evlist .ev{flex:0 0 80%;display:flex;flex-direction:column;gap:8px;margin-bottom:0;padding:14px;scroll-snap-align:start;border-radius:28px 28px 28px 8px}
+[data-live=yoko] .evlist .ev-date{flex-direction:row;align-items:baseline;gap:8px;padding:8px 14px;width:max-content}
+[data-live=yoko] .evlist .ev-flyer{order:-1}
+[data-live=yoko] .evlist .ev-flyer img{width:100%;height:260px;object-fit:contain;border:0;background:var(--faint);border-radius:20px}
+.yoko-hint{margin:0 0 8px}
+
+/* ライブ予定：たぬら式（一覧とフライヤーの帯） */
+.reel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;scrollbar-width:none;padding:4px 2px 12px}
+.reel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 86%;margin:0;scroll-snap-align:center;border:1px solid var(--edge);background:var(--card);padding:10px;border-radius:28px 28px 28px 8px}
+.slide img{display:block;width:100%;height:340px;object-fit:contain;background:var(--faint);border-radius:20px}
+.slide figcaption{font-size:13px;margin-top:8px;overflow-wrap:anywhere}
+.reel-ctrl{display:flex;justify-content:center;gap:10px;margin-top:12px}
+.reel-ctrl button{border:1px solid var(--ink);background:var(--card);color:var(--ink);padding:7px 18px;font-weight:900;cursor:pointer;border-radius:50px}
+.reel-ctrl button:hover{background:var(--ink);color:var(--bg)}
+.dots{display:flex;justify-content:center;gap:7px;margin-top:10px}
+.dots i{width:8px;height:8px;border:1px solid var(--ink);border-radius:50%}
+.dots i.on{background:var(--ink)}
+
+/* タブ */
+.tabs{display:flex;gap:4px;margin:0 0 16px;border:1px solid var(--edge2);background:var(--faint);padding:5px;width:max-content;max-width:100%;border-radius:50px}
+.tab{border:0;background:transparent;color:var(--ink);font-weight:900;font-size:15px;padding:8px 18px;cursor:pointer;border-radius:50px}
+.tab.on{background:var(--ink);color:var(--bg)}
+
+/* カレンダー */
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-title{font-family:var(--head);font-size:22px;font-weight:900}
+.cal-head button{border:1px solid var(--edge2);background:var(--card);color:var(--ink);width:40px;height:40px;cursor:pointer;font-weight:900;border-radius:50%}
+.cal-head button:disabled{opacity:.25;cursor:default}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--card);padding:10px;border:1px solid var(--edge);border-radius:24px}
+.cal-dow{text-align:center;font-size:12px;color:var(--sub)}
+.cal-cell{aspect-ratio:1;min-width:0;border:0;background:transparent;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:15px;padding:0;border-radius:50%}
+.cal-cell.past{opacity:.3}
+.cal-cell.today{outline:1px dashed var(--ink);outline-offset:-3px}
+.cal-cell.has{border:1px solid var(--ink);cursor:pointer;font-weight:900;background:var(--faint)}
+.cal-cell.sel{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.cal-detail{margin-top:14px}
+.cal-none{color:var(--sub);font-size:14px;margin:0;text-align:center;font-weight:400}
+
+/* 予約 */
+.reserve label{display:block;font-size:13px;color:var(--sub);margin-bottom:12px}
+.reserve select,.reserve input{display:block;width:100%;margin-top:4px;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--edge2);border-radius:14px;padding:11px 12px}
+.reserve select:focus,.reserve input:focus{outline:2px solid var(--sub);outline-offset:2px}
+.rv-row{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:10px}
+.rv-preview{white-space:pre-line;font-size:14px;font-weight:400;background:var(--faint);padding:14px;margin-bottom:12px;overflow-wrap:anywhere;border-radius:18px 18px 18px 6px}
+.rv-btn{display:inline-block;margin-top:8px;border:1px solid var(--ink);padding:6px 18px;text-decoration:none;font-size:14px;border-radius:50px;transition:.2s}
+.rv-btn:hover{background:var(--ink);color:var(--bg)}
+
+/* 大きいボタン */
+.big-btns{display:flex;gap:10px;flex-wrap:wrap}
+.big-btn{background:var(--accent);color:var(--on-accent);border:1px solid var(--accent);padding:11px 26px;text-decoration:none;font-weight:900;font-size:15px;cursor:pointer;border-radius:50px;box-shadow:0 6px 16px #0000001f;transition:.25s}
+.big-btn:hover{background:var(--card);color:var(--ink)}
+
+/* スケジュール一覧の画像 */
+.ichiran{margin:0 0 4px}
+.ichiran a{display:block;border:5px solid var(--card);border-radius:28px 28px 28px 8px;overflow:hidden;box-shadow:0 7px 22px #00000012}
+.ichiran img{display:block;width:100%;height:auto}
+.ichiran.many{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 14px}
+.ichiran.many a{flex:0 0 82%;scroll-snap-align:start}
+.ichiran-note{margin:0 0 18px;font-size:12px}
+
+/* お知らせ */
+.news{list-style:none;margin:0;padding:0}
+.nw{padding:16px 18px;margin-bottom:12px;background:var(--card);border:1px solid var(--edge);border-radius:24px 24px 24px 8px}
+.nw p{margin:0}
+.nw-head{display:flex;align-items:center;gap:10px}
+.nw-head time{font-family:var(--head);font-weight:900;font-size:16px}
+.new{background:var(--accent);color:var(--on-accent);font-size:11px;font-weight:900;padding:2px 10px;letter-spacing:.08em;border-radius:50px}
+.nw .nw-text{margin-top:6px;font-size:16px;overflow-wrap:anywhere}
+.nw .video{margin-top:10px}
+.nw .nw-links{margin-top:6px;display:flex;flex-wrap:wrap;gap:14px}
+.news-more{margin-top:12px}
+.news-more summary{cursor:pointer;font-weight:900;padding:6px 4px}
+
+/* 動画 */
+.video iframe{width:100%;aspect-ratio:16/9;display:block;border:5px solid var(--card);border-radius:24px;background:var(--card);box-shadow:0 7px 22px #00000012}
+.video-card{display:block;padding:12px;text-decoration:none;background:var(--card);border:1px solid var(--edge);border-radius:24px 24px 24px 8px}
+.video-card img{display:block;width:100%;margin-bottom:8px;border-radius:16px}
+.video-card small{display:block;font-weight:400;color:var(--sub);font-size:12px}
+.more{font-size:15px}
+
+/* グッズ（商品のカード。3つ以上で横に流れる） */
+.goods{margin:0 0 14px}
+.goods-in{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.good{flex:0 0 150px;display:flex;flex-direction:column;text-decoration:none;background:var(--card);border:1px solid var(--edge);border-radius:20px 20px 20px 6px;overflow:hidden}
+.good img,.g-noimg{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-bottom:1px solid var(--faint)}
+.g-noimg{display:flex;align-items:center;justify-content:center;font-size:40px;background:var(--faint)}
+.g-name{padding:8px 10px 0;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.g-price{padding:2px 10px 10px;font-size:13px;font-weight:400;margin-top:auto}
+.goods.one .good{flex:1 1 auto;display:grid;grid-template-columns:132px 1fr;grid-template-rows:1fr auto}
+.goods.one .good img{grid-row:1/span 2;width:132px;border-bottom:0;border-right:1px solid var(--faint)}
+.goods.one .g-name{padding:12px 12px 0;font-size:15px}
+.goods.one .g-price{padding:4px 12px 12px;font-size:15px}
+/* お店の枠（埋め込みのような箱） */
+.shopbox{margin:0 0 14px;background:var(--faint);border:1px solid var(--edge);border-radius:30px 30px 30px 8px;overflow:hidden}
+.shopbox-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 18px 6px;text-decoration:none;font-size:15px}
+.shopbox-head span+span{font-weight:700;font-size:13px;white-space:nowrap;background:var(--card);padding:4px 14px;border-radius:50px}
+.shopbox .goods{margin:0;padding:10px 0 16px}
+.shopbox .goods:not(.flow) .goods-in{padding:0 16px}
+.goods.flow{overflow:hidden}
+.goods.flow .goods-in{width:max-content;overflow:visible;animation:gd calc(var(--n) * 6s) linear infinite}
+.goods.flow:hover .goods-in,.goods.flow:active .goods-in,.goods.flow:focus-within .goods-in{animation-play-state:paused}
+@keyframes gd{to{transform:translateX(calc(-50% - 5px))}}
+
+/* 写真・メンバー */
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.photos a{display:block;border-radius:20px 20px 20px 6px;overflow:hidden}
+.photos img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.members{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.member{padding:16px 18px;background:var(--card);border:1px solid var(--edge);border-radius:24px 24px 24px 8px}
+.member h3{margin:0;font-size:19px;line-height:1.3}
+.member h3 small{display:block;font-size:12px;color:var(--sub);letter-spacing:.2em}
+.member p{font-size:14px;font-weight:400;margin:6px 0}
+.links a{display:inline-block;margin:6px 14px 0 0;font-size:14px}
+
+/* ご連絡・グッズの文・いちばん下 */
+.contact p,.shop p{margin:0 0 14px;font-weight:400}
+#mail-msg{margin:10px 0 0;overflow-wrap:anywhere}
+footer{margin-top:64px;padding:20px 20px 16px;font-size:13px;background:var(--faint);border-radius:30px 30px 30px 8px}
+footer .links{margin-bottom:10px}
+footer .muted{font-size:12px}
+
+/* 画像を大きく見る画面 */
+#zoom{width:min(900px,calc(100vw - 20px));max-height:calc(100dvh - 20px);padding:0 0 10px;background:var(--card);color:var(--ink);border:0;border-radius:24px;box-shadow:0 10px 30px #0004}
+#zoom::backdrop{background:#111c}
+#zoom img{display:block;max-width:100%;max-height:calc(100dvh - 80px);margin:0 auto}
+.zoom-x{display:block;margin:8px 8px 6px auto;border:1px solid var(--edge2);background:var(--card);color:var(--ink);width:40px;height:40px;font-size:18px;cursor:pointer;border-radius:50%}
+@media (prefers-reduced-motion:reduce){.ticker-in,.goods.flow .goods-in{animation:none}.goods.flow{overflow-x:auto}.goods.flow .good[aria-hidden]{display:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="ticker" aria-hidden="true"><div class="ticker-in"><span>{{TICKER}}</span><span>{{TICKER}}</span></div></div>
+<div class="wrap">
+<header class="hero">
+  <div class="brand">
+    {{LOGO}}
+    <div><h1>{{NAME}}</h1><p class="en">{{NAME_EN}}</p></div>
+  </div>
+  <p class="tag">{{TAGLINE}}</p>
+  <figure class="artist"><img src="assets/artist.jpg" alt="{{NAME}}のアーティスト写真" width="1074" height="1074"></figure>
+  <p class="about">{{ABOUT}}</p>
+</header>
+
+<section class="sec" id="sec-next">
+  <h2>つぎのライブ<small>NEXT</small></h2>
+  {{NEXT}}
+</section>
+
+<section class="sec" id="sec-news">
+  <h2>お知らせ<small>NEWS</small></h2>
+  {{NEWS}}
+</section>
+
+<section class="sec" id="sec-live" data-live="{{LIVE_LAYOUT}}">
+  <h2>ライブ予定<small>LIVE</small></h2>
+  {{ICHIRAN}}
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab" data-t="reel">一覧とフライヤー</button>
+    <button type="button" class="tab" data-t="list">リスト</button>
+    <button type="button" class="tab" data-t="cal">カレンダー</button>
+  </div>
+  <div class="pane" data-pane="reel">{{REEL}}</div>
+  <div class="pane" data-pane="list"><p class="muted yoko-hint">→ 横にスワイプして見てね</p>{{LIST}}</div>
+  <div class="pane" data-pane="cal"><div id="cal"></div></div>
+</section>
+
+<!--RV-->
+<section class="sec reserve" id="sec-reserve">
+  <h2>予約<small>RESERVE</small></h2>
+  <p class="muted">公演と枚数をえらぶと、DMに貼る文ができます。この画面には何も保存されません。</p>
+  <label>どの公演？<select id="rv-ev">{{RV_OPTIONS}}</select></label>
+  <div class="rv-row">
+    <label>おなまえ<input id="rv-name" type="text" autocomplete="name" placeholder="たぬきち"></label>
+    <label>枚数<select id="rv-n"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+  </div>
+  <label>ひとこと（なくてもOK）<input id="rv-memo" type="text"></label>
+  <div class="rv-preview" id="rv-text" aria-live="polite"></div>
+  <div class="big-btns"><button type="button" class="big-btn" id="rv-dm" data-ig="{{RV_DM}}">文をコピーしてDMへ</button></div>
+  <p class="muted" id="rv-msg"></p>
+</section>
+<!--/RV-->
+
+<section class="sec" id="sec-video">
+  <h2>動画<small>VIDEO</small></h2>
+  {{VIDEO}}
+</section>
+
+<!--SHOP-->
+<section class="sec shop" id="sec-shop">
+  <h2>グッズ<small>GOODS</small></h2>
+  {{GOODS}}
+  <p>{{SHOP_TEXT}}</p>
+  <div class="big-btns">{{SHOP_BTN}}</div>
+</section>
+<!--/SHOP-->
+
+<section class="sec" id="sec-photos">
+  <h2>写真<small>PHOTO</small></h2>
+  <div class="photos">{{PHOTOS}}</div>
+</section>
+
+<section class="sec" id="sec-members">
+  <h2>メンバー<small>MEMBER</small></h2>
+  <div class="members">{{MEMBERS}}</div>
+</section>
+
+<section class="sec contact" id="sec-contact">
+  <h2>ご連絡<small>CONTACT</small></h2>
+  <p>{{CONTACT_TEXT}}</p>
+  <div class="big-btns">{{DM_IG}}{{DM_X}}{{MAIL_BTN}}</div>
+  <p class="muted" id="mail-msg" aria-live="polite"></p>
+</section>
+
+<footer>
+  <div class="links">{{LINKS}}</div>
+  <p class="muted">予定の更新：{{UPDATED}} ／ © {{YEAR}} {{NAME}}</p>
+</footer>
+</div>
+
+<dialog id="zoom"><button type="button" class="zoom-x" aria-label="閉じる">✕</button><img alt=""></dialog>
+<script type="application/json" id="cal-data">{{CAL_DATA}}</script>
+<script>
+(function(){
+  var E=function(s){var d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML};
+
+  /* ライブ予定の形（tate＝縦リスト／yoko＝横スクロール／tanura＝たぬら式）とタブ */
+  var live=document.getElementById('sec-live'),tabBox=live.querySelector('.tabs'),allTabs=[].slice.call(tabBox.children),
+      panes=live.querySelectorAll('.pane'),evlist=document.getElementById('evlist'),more=document.getElementById('ev-more'),opened=false;
+  var ORDER={tate:['list','cal'],yoko:['list','cal'],tanura:['reel','cal','list']};
+  function show(t){allTabs.forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});panes.forEach(function(p){p.classList.toggle('on',p.dataset.pane===t)})}
+  allTabs.forEach(function(b){b.onclick=function(){show(b.dataset.t)}});
+  window.liveLayout=function(v){
+    if(!ORDER[v])v='tate';live.dataset.live=v;tabBox.innerHTML='';
+    ORDER[v].forEach(function(t){allTabs.forEach(function(b){if(b.dataset.t===t)tabBox.appendChild(b)})});
+    show(ORDER[v][0]);if(evlist)evlist.classList.toggle('open',v==='yoko'||opened);
+  };
+  if(more)more.onclick=function(){opened=true;evlist.classList.add('open');more.remove()};
+  liveLayout(live.dataset.live);
+
+  /* たぬら式の帯：◀ ▶ と「ながす」 */
+  var reel=document.getElementById('reel');
+  if(reel&&reel.children.length){
+    var slides=reel.children,dots=document.querySelectorAll('#reel-dots i'),timer=null,at=0,play=document.getElementById('reel-play');
+    var cur=function(){var c=reel.scrollLeft+reel.clientWidth/2,best=0,bd=1e9;
+      [].forEach.call(slides,function(s,i){var d=Math.abs(s.offsetLeft+s.offsetWidth/2-c);if(d<bd){bd=d;best=i}});return best};
+    var mark=function(k){if(typeof k!=='number')k=cur();at=k;dots.forEach(function(d,i){d.classList.toggle('on',i===k)})};
+    var go=function(i){i=(i+slides.length)%slides.length;var s=slides[i];mark(i);reel.scrollTo({left:s.offsetLeft-(reel.clientWidth-s.offsetWidth)/2,behavior:'smooth'})};
+    var stop=function(){clearInterval(timer);timer=null;play.textContent='▶ ながす'};
+    reel.addEventListener('scroll',function(){clearTimeout(reel._t);reel._t=setTimeout(mark,80)});mark();
+    document.getElementById('reel-prev').onclick=function(){stop();go(at-1)};
+    document.getElementById('reel-next').onclick=function(){stop();go(at+1)};
+    play.onclick=function(){if(timer){stop();return}timer=setInterval(function(){go(at+1)},3500);play.textContent='■ とめる'};
+    reel.addEventListener('pointerdown',stop);
+  }
+
+  /* 月のカレンダー */
+  var EV=JSON.parse(document.getElementById('cal-data').textContent),el=document.getElementById('cal');
+  if(el){
+    var now=new Date(),pad=function(n){return (n<10?'0':'')+n};
+    var todayS=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate()),byDay={};
+    EV.forEach(function(e){(byDay[e.date]=byDay[e.date]||[]).push(e)});
+    var ym=function(s){var p=s.split('-');return (+p[0])*12+(+p[1])-1};
+    var minM=ym(todayS),maxM=EV.length?Math.max(ym(EV[EV.length-1].date),minM):minM,cur2=EV.length?ym(EV[0].date):minM,sel=EV.length?EV[0].date:null;
+    var DOW=['日','月','火','水','木','金','土'];
+    var detail=function(){if(!sel||!byDay[sel])return '<p class="cal-none">四角の日を押すと中身が出ます</p>';
+      return byDay[sel].map(function(e){return '<article class="ev"><div class="ev-date"><span class="ev-m">'+e.m+'月</span><span class="ev-d">'+e.d+'</span><span class="ev-w">'+E(e.dow)+'</span></div><div class="ev-body"><h3>'+E(e.title)+'</h3>'+(e.venue?'<p class="ev-venue">'+E(e.venue)+'</p>':'')+'<ul class="ev-info">'+e.info.map(function(x){return '<li>'+E(x)+'</li>'}).join('')+'</ul></div></article>'}).join('')};
+    var render=function(){var y=Math.floor(cur2/12),m=cur2%12,first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+      var h='<div class="cal-head"><button type="button" id="cal-p" aria-label="前の月"'+(cur2<=minM?' disabled':'')+'>←</button><span class="cal-title">'+y+'年'+(m+1)+'月</span><button type="button" id="cal-n" aria-label="次の月"'+(cur2>=maxM?' disabled':'')+'>→</button></div><div class="cal-grid">';
+      DOW.forEach(function(d){h+='<div class="cal-dow">'+d+'</div>'});
+      for(var b=0;b<first;b++)h+='<div></div>';
+      for(var d=1;d<=days;d++){var ds=y+'-'+pad(m+1)+'-'+pad(d),ev=byDay[ds],cls='cal-cell'+(ds<todayS?' past':'')+(ds===todayS?' today':'')+(ev?' has':'')+(ds===sel?' sel':'');
+        h+=ev?'<button type="button" class="'+cls+'" data-d="'+ds+'" aria-label="'+(m+1)+'月'+d+'日 '+E(ev.map(function(x){return x.title}).join('、'))+'">'+d+'</button>':'<div class="'+cls+'">'+d+'</div>'}
+      el.innerHTML=h+'</div><div class="cal-detail">'+detail()+'</div>';
+      var pick=function(){var f=EV.filter(function(e){return ym(e.date)===cur2})[0];sel=f?f.date:null};
+      document.getElementById('cal-p').onclick=function(){if(cur2>minM){cur2--;pick();render()}};
+      document.getElementById('cal-n').onclick=function(){if(cur2<maxM){cur2++;pick();render()}};
+      el.querySelectorAll('.cal-cell.has').forEach(function(c){c.onclick=function(){sel=c.dataset.d;render()}});};
+    render();
+  }
+
+  /* フライヤーを大きく */
+  var zoom=document.getElementById('zoom');
+  document.addEventListener('click',function(ev){
+    var a=ev.target.closest&&ev.target.closest('.js-zoom');
+    if(a&&zoom.showModal&&!ev.ctrlKey&&!ev.metaKey){ev.preventDefault();zoom.querySelector('img').src=a.getAttribute('href');zoom.showModal();return}
+    if(zoom.open&&(ev.target===zoom||ev.target.closest('.zoom-x')))zoom.close();
+  });
+
+  /* メール（アドレスはページの中では隠しておき、押したときに出す） */
+  var mb=document.getElementById('mail-btn');
+  if(mb)mb.onclick=function(){
+    var a=atob(mb.dataset.m),msg=document.getElementById('mail-msg');
+    msg.textContent='メールのアドレス：'+a;
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(a).then(function(){msg.textContent='メールのアドレス：'+a+'（コピーしました）'},function(){});
+    location.href='mailto:'+a+'?subject='+encodeURIComponent(mb.dataset.s||'');
+  };
+
+  /* 予約（入力は保存しない。DMに貼る文を作るだけ） */
+  var rvEv=document.getElementById('rv-ev');
+  if(rvEv){
+    var rvName=document.getElementById('rv-name'),rvN=document.getElementById('rv-n'),rvMemo=document.getElementById('rv-memo'),rvText=document.getElementById('rv-text'),rvMsg=document.getElementById('rv-msg');
+    var body=function(){var o=rvEv.options[rvEv.selectedIndex];return '予約お願いします！\n公演：'+(o?o.text:'')+'\nおなまえ：'+(rvName.value||'（おなまえを入れてね）')+'\n枚数：'+rvN.value+'枚'+(rvMemo.value?'\nひとこと：'+rvMemo.value:'')};
+    var up=function(){rvText.textContent=body()};
+    [rvEv,rvName,rvN,rvMemo].forEach(function(x){x.addEventListener('input',up);x.addEventListener('change',up)});up();
+    document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('[data-rv]');if(a){rvEv.value=a.dataset.rv;up()}});
+    var dm=document.getElementById('rv-dm');
+    dm.onclick=function(){if(!rvName.value.trim()){rvMsg.textContent='おなまえを入れてね';rvName.focus();return}
+      var url='https://ig.me/m/'+dm.dataset.ig,go=function(m){rvMsg.textContent=m;window.open(url,'_blank','noopener')};
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(body()).then(function(){go('文をコピーしました。DMに貼って送ってね')},function(){go('上の文を長押しでコピーしてね')});else go('上の文をコピーしてDMに貼ってね')};
+  }
+})();
+</script>
+{{PANEL}}
+</body>
+</html>

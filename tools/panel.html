@@ -1,0 +1,205 @@
+<!-- 試し場のパネル（preview.html と見本ファイルだけに付く。公開ページには出ない） -->
+<div id="dp" class="open">
+  <div class="panel" role="dialog" aria-label="見た目を試す">
+    <div class="top">
+      <b>🎨 見た目を試す</b>
+      <button type="button" class="x" id="dp-close">閉じてページを見る</button>
+    </div>
+    <p class="intro">これはリンゴリラのホームページの<b>見本</b>です。予定・写真・文はこのままで、<b>見た目だけ</b>を試せます。押すとすぐ上のページが変わります。</p>
+
+    <h4>① 色のセットをえらぶ</h4>
+    <div class="row" id="dp-sets"></div>
+    <h4>② 自分で色をえらぶ（なくてもOK）</h4>
+    <div class="pick">
+      <label><input type="color" id="dp-bg"> 背景</label>
+      <label><input type="color" id="dp-ink"> 文字</label>
+      <label><input type="color" id="dp-accent"> 差し色</label>
+    </div>
+    <h4>③ 見出しの字をえらぶ</h4>
+    <div class="row" id="dp-fonts"></div>
+
+    <h4>④ ライブ予定の形をえらぶ</h4>
+    <div class="row" id="dp-live"></div>
+    <p class="hint" id="dp-live-note"></p>
+
+    <h4>⑤ チャッピー（ChatGPT）に見た目を作ってもらう（なくてもOK）</h4>
+    <ol class="steps">
+      <li>どんな感じにしたい？<input type="text" id="dp-wish" placeholder="例：昭和のレコードジャケットっぽく"></li>
+      <li><button type="button" class="copy" id="dp-ask">チャッピーに頼む文をコピー</button><br>→ チャッピーに貼って送る</li>
+      <li>返ってきたコードの右上の「コピー」を押して、ここに貼る
+        <textarea id="dp-css" rows="3" placeholder="ここに貼る"></textarea>
+        <span class="send"><button type="button" class="line" id="dp-apply">反映する</button><button type="button" class="copy" id="dp-reset">元に戻す</button></span>
+      </li>
+    </ol>
+    <p class="hint" id="dp-css-msg">骨組み（並び・中身）は変わらず、見た目だけが変わります。</p>
+
+    <h4>⑥ 気に入ったらグループに送る</h4>
+    <div class="send" id="dp-send-web">
+      <a class="line" id="dp-line" target="_blank" rel="noopener">LINEで送る</a>
+      <button type="button" class="copy" id="dp-copy">リンクをコピー</button>
+    </div>
+    <p class="hint" id="dp-send-file"><button type="button" class="copy" id="dp-copycode">組み合わせをコピー</button><br>押してLINEのグループに貼って送ってね。画面のスクショも一緒だと伝わりやすいです。</p>
+    <p class="hint"><button type="button" class="copy" id="dp-copycss">見た目の文をコピー</button><br>チャッピーで作った見た目は、これを押してLINEに貼って送ってね（たぬがホームページに入れます）。</p>
+    <p class="hint">組み合わせ：<span id="dp-code"></span></p>
+  </div>
+  <button type="button" class="fab" id="dp-fab">🎨 見た目を試す</button>
+</div>
+<style>
+#dp{position:fixed;left:0;right:0;bottom:0;z-index:9;font-family:system-ui,sans-serif;font-size:14px;font-weight:400;color:#111;pointer-events:none}
+#dp>*{pointer-events:auto}
+#dp .fab{position:absolute;right:12px;bottom:12px;background:#111;color:#fff;border:2px solid #fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 20px #0004;cursor:pointer}
+#dp.open .fab{display:none}
+#dp .panel{display:none;background:#fff;border-top:3px solid #111;padding:12px 14px 16px;max-height:58vh;overflow:auto;box-shadow:0 -8px 30px #0003}
+#dp.open .panel{display:block}
+@media (min-width:700px){#dp .panel{position:absolute;right:12px;bottom:12px;width:380px;max-height:calc(100vh - 24px);border:3px solid #111;border-radius:12px}}
+#dp .top{display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:-12px;background:#fff;padding:4px 0 6px;z-index:1}
+#dp .top b{font-size:16px}
+#dp .x{border:2px solid #111;background:#fff;color:#111;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+#dp .intro{margin:2px 0 6px;line-height:1.6;font-size:13px}
+#dp h4{margin:14px 0 6px;font-size:13px;color:#111}
+#dp .row{display:flex;flex-wrap:wrap;gap:6px}
+#dp button.opt{border:2px solid #ddd;background:#fafafa;color:#111;border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-align:left}
+#dp button.opt.on{border-color:#111;background:#fff;box-shadow:0 0 0 2px #111 inset}
+#dp .sw{display:inline-flex}#dp .sw i{width:13px;height:13px;display:block;border:1px solid #0003}
+#dp .pick{display:flex;flex-wrap:wrap;gap:4px 14px}
+#dp label{display:flex;align-items:center;gap:6px}
+#dp input[type=color]{width:42px;height:32px;border:0;padding:0;background:none}
+#dp .steps{margin:0;padding-left:20px;line-height:1.6}
+#dp .steps li{margin-bottom:8px}
+#dp input[type=text],#dp textarea{display:block;width:100%;margin-top:4px;border:2px solid #111;border-radius:8px;padding:7px 9px;font:inherit;font-size:16px;color:#111;background:#fff}
+#dp textarea{font-size:13px;font-family:ui-monospace,monospace;resize:vertical}
+#dp .send{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+#dp .line,#dp .copy{display:inline-block;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer}
+#dp .line{background:#06c755;color:#fff;border:2px solid #06c755}
+#dp .copy{background:#fff;color:#111;border:2px solid #111}
+#dp .hint{margin:8px 0 0;font-size:12px;color:#555;line-height:1.6}
+#dp #dp-code{color:#111}
+</style>
+<script>
+(function(){
+  var FONTS={{FONTS}},root=document.documentElement,cs=getComputedStyle(root),box=document.getElementById('dp');
+  var mit=document.getElementById('mitame'),ORIG=mit.textContent,custom=false,prev=null,KEY='mitame-'+location.pathname;
+  var web=/^https?:$/.test(location.protocol);
+  /* 色のセット：いちばん上が今の色。ほかはアー写から拾った色 */
+  var SETS=[
+    ['生成り×墨','#faf9f6','#1a1a1a','#1a1a1a'],
+    ['白黒','#ffffff','#111111','#111111'],
+    ['黒白','#111111','#ffffff','#ffffff'],
+    ['白×オレンジ','#ffffff','#111111','#e8571f'],
+    ['オレンジ地','#e8571f','#ffffff','#111111'],
+    ['ミント','#eef7f3','#1b2b27','#7fbfae'],
+    ['白×みどり','#ffffff','#111111','#2fae6a'],
+    ['クリーム×黄','#fbf6e9','#111111','#f2c200'],
+    ['黄色地','#f7d84a','#111111','#d9341f'],
+    ['ピンク地','#f5b6c8','#111111','#111111'],
+    ['紺×オレンジ','#1d2a4a','#fbf6e9','#e8571f']
+  ];
+  var LIVE=[
+    ['tate','縦リスト','近い2か月ぶん（少なくても3件）を出して、残りは「さらに見る」。フライヤーは小さく右に。'],
+    ['yoko','横スクロール','予定を1枚ずつのカードにして、横にスワイプして見る。フライヤーが大きい。'],
+    ['tanura','たぬら式','たぬらサイトと同じ。一覧とフライヤーを横に流す帯／カレンダー／リスト のタブ。']
+  ];
+  var bg=document.getElementById('dp-bg'),ink=document.getElementById('dp-ink'),ac=document.getElementById('dp-accent'),code=document.getElementById('dp-code');
+  var font=root.getAttribute('data-font')||'noto',sec=document.getElementById('sec-live'),live=sec.dataset.live||'tate';
+  var hex=function(v){v=(v||'').trim();if(/^[0-9a-f]{6}$/i.test(v))v='#'+v;return /^#[0-9a-f]{6}$/i.test(v)?v.toLowerCase():''};
+  var store=function(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}};
+  var load=function(k){try{return localStorage.getItem(k)}catch(e){return null}};
+  function onc(h){var r=parseInt(h.substr(1,2),16)/255,g=parseInt(h.substr(3,2),16)/255,b=parseInt(h.substr(5,2),16)/255;return (.2126*r+.7152*g+.0722*b)>.6?'#111111':'#ffffff'}
+  function cardOf(h){return onc(h)==='#ffffff'?'#ffffff':'color-mix(in srgb,var(--ink) 8%,var(--bg))'}
+  function setName(){var s=SETS.filter(function(s){return s[1]===bg.value&&s[2]===ink.value&&s[3]===ac.value})[0];return s?s[0]:'背景'+bg.value+'・文字'+ink.value+'・差し色'+ac.value}
+  function liveName(){return LIVE.filter(function(x){return x[0]===live})[0][1]}
+  function link(){return location.href.split('#')[0]+'#bg='+bg.value.slice(1)+'&ink='+ink.value.slice(1)+'&ac='+ac.value.slice(1)+'&font='+font+'&live='+live}
+  function apply(save){
+    root.style.setProperty('--bg',bg.value);root.style.setProperty('--ink',ink.value);root.style.setProperty('--accent',ac.value);root.style.setProperty('--on-accent',onc(ac.value));root.style.setProperty('--card',cardOf(ink.value));
+    root.style.setProperty('--head',FONTS[font][0]+',"Noto Sans JP",sans-serif');
+    code.textContent=(custom?'チャッピーの見た目＋':'')+setName()+' ／ 字：'+FONTS[font][1]+' ／ ライブ予定：'+liveName();
+    document.querySelectorAll('#dp-fonts .opt').forEach(function(b){b.classList.toggle('on',b.dataset.k===font)});
+    document.querySelectorAll('#dp-sets .opt').forEach(function(b){var s=SETS[+b.dataset.i];b.classList.toggle('on',s[1]===bg.value&&s[2]===ink.value&&s[3]===ac.value)});
+    document.querySelectorAll('#dp-live .opt').forEach(function(b){b.classList.toggle('on',b.dataset.k===live)});
+    document.getElementById('dp-live-note').textContent=LIVE.filter(function(x){return x[0]===live})[0][2];
+    var url=link();
+    document.getElementById('dp-line').href='https://line.me/R/share?text='+encodeURIComponent('リンゴリラのHP、この見た目どう？\n'+code.textContent+'\n'+url);
+    if(save&&web&&history.replaceState)history.replaceState(null,'',url);
+  }
+  /* チャッピーに渡す「今の見た目」：選んでいる色と字を入れたCSS */
+  function mitameNow(){
+    var css=mit.textContent;
+    if(!custom)css=css.replace(/--bg:[^;]+;/,'--bg:'+bg.value+';').replace(/--ink:[^;]+;/,'--ink:'+ink.value+';')
+      .replace(/--accent:[^;]+;/,'--accent:'+ac.value+';').replace(/--on-accent:[^;]+;/,'--on-accent:'+onc(ac.value)+';').replace(/--card:[^;]+;/,'--card:'+cardOf(ink.value)+';')
+      .replace(/--head:[^;]+;/,'--head:'+FONTS[font][0]+',"Noto Sans JP",sans-serif;');
+    return css.trim();
+  }
+  function ask(){
+    var wish=document.getElementById('dp-wish').value.trim();
+    return 'バンド「リンゴリラ」のホームページの見た目を変えたいです。\n'
+      +'下のCSSが、このページの見た目のすべてです。HTMLは変えられないので、CSSだけを書きかえてください。\n\n'
+      +'【どんな感じに】\n'+(wish||'（ここに、どんな感じにしたいか書いてください）')+'\n\n'
+      +'【守ってほしいこと】\n'
+      +'・答えはCSSだけを、1つのコードブロックで、最初から最後まで全部ください（「省略」はしない）\n'
+      +'・クラス名やID（.ev や #sec-live など）は今のものを使ってください。HTMLは変えられません\n'
+      +'・画像は足せません。飾りはCSSで（グラデーション・絵文字・::before など）\n'
+      +'・フォントを変えるなら、Google Fonts を @import でいちばん上に\n'
+      +'・スマホ（幅375px）で見やすく。読みにくい色の組み合わせにしない\n\n'
+      +'【ページの部品】\n'
+      +'.ticker 上の流れる帯 / .logo ロゴ / h1 名前 / .en 英字 / .tag キャッチコピー / .artist アー写 / .about 紹介文\n'
+      +'.sec 各欄（#sec-next つぎのライブ・#sec-news お知らせ・#sec-live ライブ予定・#sec-reserve 予約・#sec-video 動画・#sec-shop グッズ・#sec-photos 写真・#sec-members メンバー・#sec-contact ご連絡）\n'
+      +'h2 欄の見出し（h2 small は英字）/ .ev ライブ1件（.ev-date 日付・.ev-body 中身・.ev-venue 会場・.ev-info 時間や料金・.ev-flyer フライヤー）\n'
+      +'.tabs .tab タブ / .cal- で始まるもの カレンダー / .big-btn 大きいボタン / .nw お知らせ1件 / .good グッズのカード / .photos 写真 / .member メンバー / footer いちばん下\n'
+      +'欄の順番：.wrap を display:flex; flex-direction:column にして、各 section に order を付けると入れ替えられます\n\n'
+      +'【今のCSS】\n```css\n'+mitameNow()+'\n```';
+  }
+  function copy(text,btn,label){
+    var done=function(){btn.textContent='コピーしました';setTimeout(function(){btn.textContent=label},2000)};
+    (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(done,function(){
+      var t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();
+      try{document.execCommand('copy');done()}catch(e){prompt('コピーしてね',text)}t.remove()});
+  }
+  function useCss(css,save){
+    if(!custom)prev=[bg.value,ink.value,ac.value];
+    mit.textContent=css;custom=true;root.removeAttribute('style');
+    if(save)store(KEY,css);
+    var r=getComputedStyle(root);bg.value=hex(r.getPropertyValue('--bg'))||bg.value;ink.value=hex(r.getPropertyValue('--ink'))||ink.value;ac.value=hex(r.getPropertyValue('--accent'))||ac.value;
+    code.textContent='チャッピーの見た目 ／ ライブ予定：'+liveName();
+  }
+
+  /* はじめ：リンクに書いてあればそれ、無ければ今の設定 */
+  bg.value=hex(cs.getPropertyValue('--bg'))||'#ffffff';ink.value=hex(cs.getPropertyValue('--ink'))||'#111111';ac.value=hex(cs.getPropertyValue('--accent'))||'#111111';
+  var q={};location.hash.replace(/^#/,'').split('&').forEach(function(p){var kv=p.split('=');if(kv[1])q[kv[0]]=decodeURIComponent(kv[1])});
+  if(hex(q.bg))bg.value=hex(q.bg);if(hex(q.ink))ink.value=hex(q.ink);if(hex(q.ac))ac.value=hex(q.ac);if(FONTS[q.font])font=q.font;
+  if(q.live&&LIVE.some(function(x){return x[0]===q.live})){live=q.live;window.liveLayout(live)}
+  if(q.bg)box.classList.remove('open');   /* 送られてきたリンクで開いた人には、まずページを見せる */
+  document.getElementById('dp-send-web').hidden=!web;document.getElementById('dp-send-file').hidden=web;
+
+  var sets=document.getElementById('dp-sets');
+  SETS.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.className='opt';b.dataset.i=i;
+    b.innerHTML='<span class="sw"><i style="background:'+s[1]+'"></i><i style="background:'+s[2]+'"></i><i style="background:'+s[3]+'"></i></span>'+s[0];
+    b.onclick=function(){bg.value=s[1];ink.value=s[2];ac.value=s[3];apply(true)};sets.appendChild(b)});
+  var fonts=document.getElementById('dp-fonts');
+  Object.keys(FONTS).forEach(function(k){var b=document.createElement('button');b.type='button';b.className='opt';b.dataset.k=k;b.textContent=FONTS[k][1];b.style.fontFamily=FONTS[k][0];
+    b.onclick=function(){font=k;apply(true)};fonts.appendChild(b)});
+  var lv=document.getElementById('dp-live');
+  LIVE.forEach(function(x){var b=document.createElement('button');b.type='button';b.className='opt';b.dataset.k=x[0];b.textContent=x[1];
+    b.onclick=function(){live=x[0];window.liveLayout(live);apply(true);sec.scrollIntoView({behavior:'smooth'})};lv.appendChild(b)});
+  [bg,ink,ac].forEach(function(x){x.addEventListener('input',function(){apply(true)})});
+
+  document.getElementById('dp-ask').onclick=function(){copy(ask(),this,'チャッピーに頼む文をコピー')};
+  document.getElementById('dp-copycss').onclick=function(){copy(mitameNow(),this,'見た目の文をコピー')};
+  document.getElementById('dp-apply').onclick=function(){
+    var t=document.getElementById('dp-css').value,m=t.match(/```[a-z]*\s*([\s\S]*?)```/i),msg=document.getElementById('dp-css-msg');
+    if(m)t=m[1];t=t.trim();
+    if(t.indexOf('{')<0){msg.textContent='CSSが見つかりませんでした。チャッピーの答えのコードの部分をコピーして貼ってね。';return}
+    useCss(t,true);msg.textContent='反映しました！上のページを見てね。戻すときは「元に戻す」。';
+  };
+  document.getElementById('dp-reset').onclick=function(){
+    mit.textContent=ORIG;custom=false;store(KEY,null);document.getElementById('dp-css').value='';
+    if(prev){bg.value=prev[0];ink.value=prev[1];ac.value=prev[2];prev=null}
+    document.getElementById('dp-css-msg').textContent='元の見た目に戻しました。';apply(true);
+  };
+  document.getElementById('dp-fab').onclick=function(){box.classList.add('open')};
+  document.getElementById('dp-close').onclick=function(){box.classList.remove('open')};
+  document.getElementById('dp-copy').onclick=function(){copy(link(),this,'リンクをコピー')};
+  document.getElementById('dp-copycode').onclick=function(){copy('リンゴリラHPの見本、これが好き！\n'+code.textContent,this,'組み合わせをコピー')};
+  apply(false);
+  var saved=load(KEY);if(saved&&!q.bg)useCss(saved,false);
+})();
+</script>

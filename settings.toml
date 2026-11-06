@@ -1,0 +1,96 @@
+# ============================================
+#  リンゴリラのホームページ　せってい
+#  「" "」の中だけ書きかえてください。
+#  # から右はメモです（ページには出ません）。
+#  保存（Commit changes）すると、数分でページに出ます。
+# ============================================
+
+name = "リンゴリラ"
+name_en = "RINGORILA"
+tagline = "とっても愉快なニューウェーブバンド！"
+url = "https://ringorila2025.github.io"
+
+# ---- 色と字 ----
+[look]
+background = "#faf9f6"   # 背景の色
+text = "#1a1a1a"         # 文字の色
+accent = "#1a1a1a"       # 差し色（ボタン・帯）
+font = "kaisei"          # 見出しの字（下の一覧から1つ。試し場の「③ 見出しの字」で見比べられます）
+# noto / dela / rocknroll / rounded / mochiy / zenmaru / kiwi / hachimaru / darumadrop / potta / reggae
+# monomaniac / train / rampart / dot / stick / yusei / slackside / klee / kaisei / shippori / yuji
+
+# ---- バンドのSNS（@の後ろだけ。URLのものはURLのまま） ----
+[links]
+instagram = "ringorila2025"
+x = "ringorila2025"
+threads = "ringorila2025"
+youtube = "https://www.youtube.com/@ringorila2025"
+facebook = "https://www.facebook.com/752748184595069"
+
+# ---- 動画 ----
+[video]
+# 空のままなら、チャンネルの動画が新しい順に出ます（動画をあげると自動で先頭に）
+# 見せる動画を選びたいときだけ、YouTubeの再生リストのURLをそのまま貼る
+playlist = ""
+channel_id = "UCjzadOdPjZljP6We-WqURdA"   # チャンネルの番号（ふつうは触らない）
+
+# ---- グッズ・通販（url を "" にして shop.md も空なら、この欄は出ません） ----
+# 商品のカードは shop.md に1行ずつ書きます（3つ以上になると横にゆっくり流れます）
+[shop]
+name = "あけぼの商店"
+url = "https://akebono-jirushi.stores.jp/"
+text = "リンゴリラのソノシート「Lui-Lui」は、あけぼの商店（通販）で買えます。"
+flow_min = 3   # 商品がこの数以上になったら流す
+
+# ---- ライブ予定（Googleカレンダーから自動） ----
+[live]
+reserve_dm = "ringorila2025"   # 予約のDMを送る先（Instagram）
+# この言葉が入っている予定は出さない（タイトルか説明欄）
+hide = ["#解禁前", "🔒", "リハ", "スタジオ"]
+# フライヤーは松たぬら情報サイトに出ているものを自動で付ける（使わないなら "" に）
+# flyers フォルダに「2026-12-12.jpg」のような名前で置いた画像があれば、そっちが優先
+flyers_from = "https://magnesiumtanula.github.io"
+flyers_unit = "apple"   # たぬらサイトでの呼び名（🍏リンゴリラ = apple）
+# ライブ予定の形：tate（縦リスト）/ yoko（横スクロール）/ tanura（たぬら式）
+layout = "tate"
+# リストに最初から出すのは「何か月先まで」。それより少ないときは近い順に list_min 件まで出す
+# 残りは「さらに見る」ボタンで開く
+list_months = 2
+list_min = 3
+
+# ---- ご連絡 ----
+[contact]
+text = "ライブのご予約・出演のご依頼は、各SNSのDMかメールでどうぞ。"
+# メールのアドレス（ページの中では隠してあって、「メールする」を押すと出ます）
+# このファイルはだれでも読めるので、アドレスはここに書かず、GitHubの鍵付きの場所（Secrets）の CONTACT_MAIL に入れてあります。
+# 鍵付きの場所が空のときだけ、下の mail が使われます。メールを使わないなら、どちらも空に。
+mail = ""
+
+# ---- メンバー（増やすときは [[members]] から下をまるごとコピー） ----
+[[members]]
+name = "ヒサノヒロエ"
+part = "Vo"
+instagram = "hiroehisano_akebonojirushi"
+x = "hiroe_akebono"
+text = ""
+
+[[members]]
+name = "ひらたろう"
+part = "Ba"
+instagram = "t.s.garpalin"
+x = ""
+text = ""
+
+[[members]]
+name = "サトウミノル"
+part = "Dr"
+instagram = "minoncho7"
+x = "minoncho7"
+text = ""
+
+[[members]]
+name = "松たぬら"
+part = "Tp"
+instagram = "magnesium.tanula"
+x = "magnesiumTANULA"
+text = ""

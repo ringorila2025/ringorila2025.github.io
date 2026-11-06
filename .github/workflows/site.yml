@@ -1,0 +1,69 @@
+# ホームページを作って公開する（人は触らなくてよい）
+#  - だれかがファイルを保存（Commit）したとき
+#  - 1日3回（カレンダーの予定とフライヤーを読み直す）
+#  - Actions タブの「Run workflow」ボタンを押したとき
+name: ホームページを更新
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 0,5,12 * * *'   # 9時・14時・21時（日本時間。たぬらサイトの更新のあと）
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 長く保存が無いときの「生きてるよ」記録のため
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 写真を「新しく置いた順」に並べるため
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install Pillow
+
+      - name: ページを作る
+        env:
+          CAL_ICS_URL: ${{ secrets.CAL_ICS_URL }}
+          CONTACT_MAIL: ${{ secrets.CONTACT_MAIL }}   # 「メールする」のアドレス（公開の場所に書かないため）
+        run: python tools/build.py --preview   # preview.html＝色と字の試し場（メンバー相談用）
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      # GitHubは60日間保存の無いリポジトリの定期の自動実行を止めてしまうので、
+      # 50日保存が無ければ空の記録を1つ残す（中身は何も変わらない）
+      - name: 生きてるよ記録
+        if: github.event_name == 'schedule'
+        run: |
+          last=$(git log -1 --format=%ct)
+          now=$(date +%s)
+          if [ $(( (now - last) / 86400 )) -ge 50 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit --allow-empty -m "自動：生きてるよ記録"
+            git push
+          fi
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
