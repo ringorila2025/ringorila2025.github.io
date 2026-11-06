@@ -146,14 +146,35 @@ def live_events(ics_text, hide, today):
     return out
 
 
+def ics_url(raw):
+    """鍵付きの場所に入れたカレンダーのURLを読める形にそろえる（前後の空白・引用符、webcal://、https:// の付け忘れ）"""
+    u = raw.strip().strip('"\'<>').strip()
+    if u.lower().startswith('webcal://'):
+        u = 'https://' + u[len('webcal://'):]
+    elif u.lower().startswith(('calendar.google.com/', 'www.google.com/calendar/')):
+        u = 'https://' + u
+    return u
+
+
+def url_shape(u):
+    """URLそのものは出さずに、形だけを書く（自動更新の記録はだれでも読めるため）"""
+    yn = lambda b: 'はい' if b else 'いいえ'
+    return (f'長さ{len(u)}文字／https://で始まる：{yn(u.lower().startswith("https://"))}'
+            f'／「@」がある：{yn("@" in u)}／「/」がある：{yn("/" in u)}／.icsで終わる：{yn(u.lower().endswith(".ics"))}')
+
+
 def load_ics(argv):
     if '--ics' in argv:
         with open(argv[argv.index('--ics') + 1], encoding='utf-8') as f:
             return f.read()
-    url = os.environ.get('CAL_ICS_URL', '').strip()
+    url = ics_url(os.environ.get('CAL_ICS_URL', ''))
     if not url:
         print('（カレンダーのURLが無いので、ライブ予定は空で作ります）')
         return ''
+    if not url.lower().startswith(('https://', 'http://')):
+        sys.exit('カレンダーのURL（CAL_ICS_URL）がURLの形になっていません。'
+                 'Googleカレンダーの「iCal形式の非公開アドレス」（https://calendar.google.com/calendar/ical/…/basic.ics）を入れてください。'
+                 '（いま入っているものの形：' + url_shape(url) + '）')
     req = urllib.request.Request(url, headers={'User-Agent': 'band-site-builder'})
     with urllib.request.urlopen(req, timeout=30) as r:
         return r.read().decode('utf-8')
