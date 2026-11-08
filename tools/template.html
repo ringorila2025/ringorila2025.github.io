@@ -75,10 +75,13 @@ header.hero{padding:38px 0 0}
 .logo .ink{fill:var(--ink)} .logo .paper{fill:var(--bg)}
 h1{font-family:var(--head);font-weight:900;font-size:clamp(30px,13vw,92px);line-height:1;margin:0;letter-spacing:.02em;white-space:nowrap}
 .en{margin:8px 0 0;font-size:clamp(13px,3.4vw,16px);letter-spacing:.35em;color:var(--sub)}
-.tag{display:inline-block;margin:22px 0 0;padding:9px 22px;font-size:clamp(16px,4.4vw,20px);background:var(--faint);border-radius:50px 50px 50px 8px}
+/* ひとこと：映画のコメントのように、イタリック（斜め）で目立たせる */
+.tag{margin:22px 0 0;padding:4px 0 4px 16px;border-left:3px solid var(--ink);font-family:var(--head);font-style:italic;font-size:clamp(17px,5vw,22px);line-height:1.65}
+.tag .q{display:block}
+.tag .q+.q{margin-top:18px}
 .artist{position:relative;margin:24px 0 0;border:5px solid var(--card);border-radius:40px 40px 40px 10px;overflow:hidden;box-shadow:0 8px 25px #0000001a}
 .artist img{display:block;width:100%;height:auto}
-.about{margin:22px 4px 0;font-weight:400;font-size:15px;line-height:2}
+.about{margin:22px 4px 0;font-weight:700;font-size:12px;line-height:2.1;color:color-mix(in srgb,var(--ink) 78%,var(--bg))}
 
 /* 各欄と見出し */
 .sec{position:relative;margin-top:58px;padding-top:20px}
@@ -187,9 +190,8 @@ h2 small{font-family:var(--font);font-size:13px;letter-spacing:.3em;color:var(--
 .nw .nw-links{margin-top:6px;display:flex;flex-wrap:wrap;gap:14px}
 .news-more{margin-top:12px}
 .news-more summary{cursor:pointer;font-weight:900;padding:6px 4px}
-.about-more{margin-top:10px}
-.about-more summary{cursor:pointer;font-weight:900;padding:6px 4px}
-.about-more p{margin:12px 0 0}
+.about p{margin:0 0 14px}
+.tag .by{white-space:nowrap;display:inline-block;margin-top:2px;font-size:.68em;letter-spacing:.08em;color:var(--sub)}
 
 /* 動画 */
 .video iframe{width:100%;aspect-ratio:16/9;display:block;border:5px solid var(--card);border-radius:24px;background:var(--card);box-shadow:0 7px 22px #00000012}
@@ -255,7 +257,7 @@ footer .muted{font-size:12px}
     {{LOGO}}
     <div><h1>{{NAME}}</h1><p class="en">{{NAME_EN}}</p></div>
   </div>
-  <p class="tag">{{TAGLINE}}</p>
+  <p class="tag">{{QUOTES}}</p>
   <figure class="artist"><img src="assets/artist.jpg" alt="{{NAME}}のアーティスト写真" width="1074" height="1074"></figure>
   <div class="about">{{ABOUT}}</div>
 </header>

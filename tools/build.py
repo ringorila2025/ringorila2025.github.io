@@ -44,7 +44,7 @@ WEEK = '月火水木金土日'
 
 # 見出しの字: key -> (CSSの名前, Google Fontsの指定, パネルの表示名)
 FONTS = {
-    'noto': ('"Noto Sans JP"', 'Noto+Sans+JP:wght@700;900', 'ふつうのゴシック'),
+    'noto': ('"Noto Sans JP"', 'Noto+Sans+JP:wght@300;400;700;900', 'ふつうのゴシック'),
     'dela': ('"Dela Gothic One"', 'Dela+Gothic+One', 'デラゴシック（太い）'),
     'rocknroll': ('"RocknRoll One"', 'RocknRoll+One', 'ロックンロール'),
     'rounded': ('"M PLUS Rounded 1c"', 'M+PLUS+Rounded+1c:wght@800', 'まるゴシック'),
@@ -603,15 +603,18 @@ def card_color(ink):
     return 'color-mix(in srgb,var(--ink) 8%,var(--bg))'
 
 
+def quotes_html(text):
+    """ひとこと：「――名前」は途中で折りかえさないように1かたまりにする"""
+    out = []
+    for line in text.split('\n'):
+        line = esc(line.strip())
+        out.append('<span class="q">%s</span>' % re.sub(r'(――.+)$', r'<span class="by">\1</span>', line))
+    return ''.join(out)
+
+
 def about_html(text):
-    """紹介文：最初の段落（空行まで）だけ見せ、残りは「続きを読む」でたたむ"""
-    head, _, rest = text.partition('\n\n')
-    h = esc(head.strip()).replace('\n', '<br>')
-    rest = rest.strip()
-    if not rest:
-        return h
-    r = esc(rest).replace('\n\n', '</p><p>').replace('\n', '<br>')
-    return h + '<details class="about-more"><summary>続きを読む</summary><p>' + r + '</p></details>'
+    """紹介文：空行で区切った段落ごとに <p> にする"""
+    return ''.join('<p>%s</p>' % esc(p.strip()).replace('\n', '<br>') for p in text.split('\n\n') if p.strip())
 
 
 def build(preview=False, argv=(), mihon=False):
@@ -621,6 +624,10 @@ def build(preview=False, argv=(), mihon=False):
     if os.path.exists(os.path.join(ROOT, 'about.md')):
         with open(os.path.join(ROOT, 'about.md'), encoding='utf-8') as f:
             about = f.read().strip()
+    quotes = ''
+    if os.path.exists(os.path.join(ROOT, 'quotes.md')):
+        with open(os.path.join(ROOT, 'quotes.md'), encoding='utf-8') as f:
+            quotes = f.read().strip()
     look, links, live, contact = S.get('look', {}), S.get('links', {}), S.get('live', {}), S.get('contact', {})
     now = dt.datetime.now(JST)
 
@@ -657,6 +664,7 @@ def build(preview=False, argv=(), mihon=False):
         'NAME': esc(S.get('name')), 'NAME_EN': esc(S.get('name_en')), 'TAGLINE': esc(S.get('tagline')),
         'URL': esc(S.get('url', '').rstrip('/')),
         'ABOUT': about_html(about),
+        'QUOTES': quotes_html(quotes) if quotes else esc(S.get('tagline')),
         'BG': esc(look.get('background', '#ffffff')), 'INK': esc(look.get('text', '#111111')),
         'ACCENT': esc(look.get('accent', '#111111')), 'ON_ACCENT': on_color(look.get('accent', '#111111')),
         'CARD': card_color(look.get('text', '#111111')),
