@@ -69,28 +69,28 @@ mail = ""
 # ---- メンバー（増やすときは [[members]] から下をまるごとコピー） ----
 [[members]]
 name = "ヒサノヒロエ"
-part = "Vo"
+part = "Vo.Per."
 instagram = "hiroehisano_akebonojirushi"
 x = "hiroe_akebono"
 text = ""
 
 [[members]]
 name = "ひらたろう"
-part = "Ba"
+part = "B.Cho."
 instagram = "t.s.garpalin"
 x = ""
 text = ""
 
 [[members]]
 name = "サトウミノル"
-part = "Dr"
+part = "Dr."
 instagram = "minoncho7"
 x = "minoncho7"
 text = ""
 
 [[members]]
 name = "松たぬら"
-part = "Tp"
+part = "Tp.Cho."
 instagram = "magnesium.tanula"
 x = "magnesiumTANULA"
 text = ""
