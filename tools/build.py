@@ -546,9 +546,8 @@ def members_html(ms):
             '<a href="%s" target="_blank" rel="noopener">Instagram</a>' % esc(ig_url(mb['instagram'])) if mb.get('instagram') else '',
             '<a href="%s" target="_blank" rel="noopener">X</a>' % esc(x_url(mb['x'])) if mb.get('x') else ''])
         text = '<p>%s</p>' % esc(mb['text']) if mb.get('text') else ''
-        # 見出しは「パート.名前」の形（例：Vo.Per.ヒサノヒロエ）
-        cards.append('<article class="member"><h3><span>%s</span><span>%s</span></h3>%s<div class="links">%s</div></article>'
-                     % (esc(mb.get('part')), esc(mb.get('name')), text, links))
+        cards.append('<article class="member"><h3>%s<small>%s</small></h3>%s<div class="links">%s</div></article>'
+                     % (esc(mb.get('name')), esc(mb.get('part')), text, links))
     return ''.join(cards)
 
 
