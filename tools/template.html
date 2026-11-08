@@ -61,7 +61,9 @@ button,input,select{font:inherit}
 .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
 
 /* 上の流れる帯 */
-.ticker{background:var(--accent);color:var(--on-accent);overflow:hidden;white-space:nowrap;font-size:12px;padding:9px 0;letter-spacing:.15em;border-radius:0 0 50% 50% / 0 0 18px 18px}
+.ticker{background:var(--accent);color:var(--on-accent);overflow:hidden;white-space:nowrap;font-family:var(--head);font-size:15px;padding:11px 0 24px;letter-spacing:.12em;border-radius:0 0 50% 50% / 0 0 18px 18px}
+/* 上の帯：下の丸い角（18px）より下の余白（24px）を大きくして、文字が角で切れないようにしている */
+h3{font-family:var(--head)}
 .ticker-in{display:inline-flex;animation:tk 36s linear infinite}
 .ticker-in span{padding-right:4em}
 @keyframes tk{to{transform:translateX(-50%)}}
@@ -185,6 +187,9 @@ h2 small{font-family:var(--font);font-size:13px;letter-spacing:.3em;color:var(--
 .nw .nw-links{margin-top:6px;display:flex;flex-wrap:wrap;gap:14px}
 .news-more{margin-top:12px}
 .news-more summary{cursor:pointer;font-weight:900;padding:6px 4px}
+.about-more{margin-top:10px}
+.about-more summary{cursor:pointer;font-weight:900;padding:6px 4px}
+.about-more p{margin:12px 0 0}
 
 /* 動画 */
 .video iframe{width:100%;aspect-ratio:16/9;display:block;border:5px solid var(--card);border-radius:24px;background:var(--card);box-shadow:0 7px 22px #00000012}
@@ -252,7 +257,7 @@ footer .muted{font-size:12px}
   </div>
   <p class="tag">{{TAGLINE}}</p>
   <figure class="artist"><img src="assets/artist.jpg" alt="{{NAME}}のアーティスト写真" width="1074" height="1074"></figure>
-  <p class="about">{{ABOUT}}</p>
+  <div class="about">{{ABOUT}}</div>
 </header>
 
 <section class="sec" id="sec-next">

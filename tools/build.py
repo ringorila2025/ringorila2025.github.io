@@ -603,6 +603,17 @@ def card_color(ink):
     return 'color-mix(in srgb,var(--ink) 8%,var(--bg))'
 
 
+def about_html(text):
+    """紹介文：最初の段落（空行まで）だけ見せ、残りは「続きを読む」でたたむ"""
+    head, _, rest = text.partition('\n\n')
+    h = esc(head.strip()).replace('\n', '<br>')
+    rest = rest.strip()
+    if not rest:
+        return h
+    r = esc(rest).replace('\n\n', '</p><p>').replace('\n', '<br>')
+    return h + '<details class="about-more"><summary>続きを読む</summary><p>' + r + '</p></details>'
+
+
 def build(preview=False, argv=(), mihon=False):
     with open(os.path.join(ROOT, 'settings.toml'), 'rb') as f:
         S = tomllib.load(f)
@@ -645,7 +656,7 @@ def build(preview=False, argv=(), mihon=False):
         'LOGO': logo,
         'NAME': esc(S.get('name')), 'NAME_EN': esc(S.get('name_en')), 'TAGLINE': esc(S.get('tagline')),
         'URL': esc(S.get('url', '').rstrip('/')),
-        'ABOUT': esc(about).replace('\n', '<br>'),
+        'ABOUT': about_html(about),
         'BG': esc(look.get('background', '#ffffff')), 'INK': esc(look.get('text', '#111111')),
         'ACCENT': esc(look.get('accent', '#111111')), 'ON_ACCENT': on_color(look.get('accent', '#111111')),
         'CARD': card_color(look.get('text', '#111111')),
