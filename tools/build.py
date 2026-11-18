@@ -661,6 +661,7 @@ def build(preview=False, argv=(), mihon=False):
         logo = re.sub(r'<svg\b', '<svg class="logo" role="img" aria-label="%s のロゴ"' % esc(S.get('name')), svg[svg.index('<svg'):], count=1)
     rep = {
         'LOGO': logo,
+        'TITLE': esc(S.get('title') or S.get('name')), 'KEYWORDS': esc(S.get('keywords', '')),
         'NAME': esc(S.get('name')), 'NAME_EN': esc(S.get('name_en')), 'TAGLINE': esc(S.get('tagline')),
         'URL': esc(S.get('url', '').rstrip('/')),
         'ABOUT': about_html(about),
